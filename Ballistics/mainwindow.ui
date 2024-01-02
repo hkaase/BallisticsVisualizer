@@ -307,38 +307,6 @@
   <connection>
    <sender>useAtmosCorrection</sender>
    <signal>toggled(bool)</signal>
-   <receiver>temperatureLabel_2</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>284</x>
-     <y>235</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>86</x>
-     <y>263</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useAtmosCorrection</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>temperature</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>284</x>
-     <y>235</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>284</x>
-     <y>263</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useAtmosCorrection</sender>
-   <signal>toggled(bool)</signal>
    <receiver>airPressureInHgLabel</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>

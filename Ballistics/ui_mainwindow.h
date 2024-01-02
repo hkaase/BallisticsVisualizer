@@ -62,14 +62,14 @@ public:
     QLineEdit *zero;
     QLabel *atmosCheckLabel;
     QCheckBox *useAtmosCorrection;
-    QLabel *airPressureInHgLabel;
-    QLineEdit *inHg;
     QLabel *altitudeLabel;
     QLineEdit *altitude;
     QLabel *humidityLabel;
     QLineEdit *humidity;
     QLabel *temperatureLabel_2;
     QLineEdit *temperature;
+    QLabel *airPressureInHgLabel;
+    QLineEdit *inHg;
     QPushButton *calcButton;
     QChartView *trajectoryChart;
     QStatusBar *statusbar;
@@ -228,50 +228,38 @@ public:
         atmosCheckLabel = new QLabel(horizontalLayoutWidget);
         atmosCheckLabel->setObjectName("atmosCheckLabel");
 
-        formLayout_2->setWidget(13, QFormLayout::LabelRole, atmosCheckLabel);
+        formLayout_2->setWidget(14, QFormLayout::LabelRole, atmosCheckLabel);
 
         useAtmosCorrection = new QCheckBox(horizontalLayoutWidget);
         useAtmosCorrection->setObjectName("useAtmosCorrection");
         useAtmosCorrection->setEnabled(true);
         useAtmosCorrection->setChecked(false);
 
-        formLayout_2->setWidget(13, QFormLayout::FieldRole, useAtmosCorrection);
-
-        airPressureInHgLabel = new QLabel(horizontalLayoutWidget);
-        airPressureInHgLabel->setObjectName("airPressureInHgLabel");
-        airPressureInHgLabel->setEnabled(false);
-
-        formLayout_2->setWidget(15, QFormLayout::LabelRole, airPressureInHgLabel);
-
-        inHg = new QLineEdit(horizontalLayoutWidget);
-        inHg->setObjectName("inHg");
-        inHg->setEnabled(false);
-
-        formLayout_2->setWidget(15, QFormLayout::FieldRole, inHg);
+        formLayout_2->setWidget(14, QFormLayout::FieldRole, useAtmosCorrection);
 
         altitudeLabel = new QLabel(horizontalLayoutWidget);
         altitudeLabel->setObjectName("altitudeLabel");
         altitudeLabel->setEnabled(false);
 
-        formLayout_2->setWidget(16, QFormLayout::LabelRole, altitudeLabel);
+        formLayout_2->setWidget(17, QFormLayout::LabelRole, altitudeLabel);
 
         altitude = new QLineEdit(horizontalLayoutWidget);
         altitude->setObjectName("altitude");
         altitude->setEnabled(false);
 
-        formLayout_2->setWidget(16, QFormLayout::FieldRole, altitude);
+        formLayout_2->setWidget(17, QFormLayout::FieldRole, altitude);
 
         humidityLabel = new QLabel(horizontalLayoutWidget);
         humidityLabel->setObjectName("humidityLabel");
         humidityLabel->setEnabled(false);
 
-        formLayout_2->setWidget(17, QFormLayout::LabelRole, humidityLabel);
+        formLayout_2->setWidget(18, QFormLayout::LabelRole, humidityLabel);
 
         humidity = new QLineEdit(horizontalLayoutWidget);
         humidity->setObjectName("humidity");
         humidity->setEnabled(false);
 
-        formLayout_2->setWidget(17, QFormLayout::FieldRole, humidity);
+        formLayout_2->setWidget(18, QFormLayout::FieldRole, humidity);
 
         temperatureLabel_2 = new QLabel(horizontalLayoutWidget);
         temperatureLabel_2->setObjectName("temperatureLabel_2");
@@ -286,6 +274,18 @@ public:
         temperature->setProperty("setHidden", QVariant(true));
 
         formLayout_2->setWidget(12, QFormLayout::FieldRole, temperature);
+
+        airPressureInHgLabel = new QLabel(horizontalLayoutWidget);
+        airPressureInHgLabel->setObjectName("airPressureInHgLabel");
+        airPressureInHgLabel->setEnabled(true);
+
+        formLayout_2->setWidget(13, QFormLayout::LabelRole, airPressureInHgLabel);
+
+        inHg = new QLineEdit(horizontalLayoutWidget);
+        inHg->setObjectName("inHg");
+        inHg->setEnabled(true);
+
+        formLayout_2->setWidget(13, QFormLayout::FieldRole, inHg);
 
 
         verticalLayout->addLayout(formLayout_2);
@@ -309,10 +309,6 @@ public:
         MainWindow->setStatusBar(statusbar);
 
         retranslateUi(MainWindow);
-        QObject::connect(useAtmosCorrection, &QCheckBox::toggled, temperatureLabel_2, &QLabel::setEnabled);
-        QObject::connect(useAtmosCorrection, &QCheckBox::toggled, temperature, &QLineEdit::setEnabled);
-        QObject::connect(useAtmosCorrection, &QCheckBox::toggled, airPressureInHgLabel, &QLabel::setEnabled);
-        QObject::connect(useAtmosCorrection, &QCheckBox::toggled, inHg, &QLineEdit::setEnabled);
         QObject::connect(useAtmosCorrection, &QCheckBox::toggled, altitudeLabel, &QLabel::setEnabled);
         QObject::connect(useAtmosCorrection, &QCheckBox::toggled, altitude, &QLineEdit::setEnabled);
         QObject::connect(useAtmosCorrection, &QCheckBox::toggled, humidity, &QLineEdit::setEnabled);
@@ -341,11 +337,11 @@ public:
         zeroDistanceLabel->setText(QCoreApplication::translate("MainWindow", "Zero Distance", nullptr));
         atmosCheckLabel->setText(QCoreApplication::translate("MainWindow", "Use Atmosphere Correction?", nullptr));
         useAtmosCorrection->setText(QCoreApplication::translate("MainWindow", "Yes", nullptr));
-        airPressureInHgLabel->setText(QCoreApplication::translate("MainWindow", "Air Pressure (inHg)", nullptr));
         altitudeLabel->setText(QCoreApplication::translate("MainWindow", "Altitude", nullptr));
         humidityLabel->setText(QCoreApplication::translate("MainWindow", "Humidity", nullptr));
         temperatureLabel_2->setText(QCoreApplication::translate("MainWindow", "Temperature", nullptr));
-        temperature->setText(QCoreApplication::translate("MainWindow", "s", nullptr));
+        temperature->setText(QString());
+        airPressureInHgLabel->setText(QCoreApplication::translate("MainWindow", "Air Pressure (inHg)", nullptr));
         calcButton->setText(QCoreApplication::translate("MainWindow", "Calculate", nullptr));
     } // retranslateUi
 

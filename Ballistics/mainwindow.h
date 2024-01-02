@@ -29,6 +29,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+	bool validateInputs();
     void updateTrajectoryChart(const QVector<TrajectoryPoint>&);
     void computeBallistics();
 	QVector<TrajectoryPoint> trajectoryData;

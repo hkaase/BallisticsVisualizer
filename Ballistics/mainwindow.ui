@@ -179,14 +179,14 @@
          <item row="11" column="1">
           <widget class="QLineEdit" name="zero"/>
          </item>
-         <item row="13" column="0">
+         <item row="14" column="0">
           <widget class="QLabel" name="atmosCheckLabel">
            <property name="text">
             <string>Use Atmosphere Correction?</string>
            </property>
           </widget>
          </item>
-         <item row="13" column="1">
+         <item row="14" column="1">
           <widget class="QCheckBox" name="useAtmosCorrection">
            <property name="enabled">
             <bool>true</bool>
@@ -199,24 +199,7 @@
            </property>
           </widget>
          </item>
-         <item row="15" column="0">
-          <widget class="QLabel" name="airPressureInHgLabel">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Air Pressure (inHg)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="15" column="1">
-          <widget class="QLineEdit" name="inHg">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="16" column="0">
+         <item row="17" column="0">
           <widget class="QLabel" name="altitudeLabel">
            <property name="enabled">
             <bool>false</bool>
@@ -226,14 +209,14 @@
            </property>
           </widget>
          </item>
-         <item row="16" column="1">
+         <item row="17" column="1">
           <widget class="QLineEdit" name="altitude">
            <property name="enabled">
             <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="17" column="0">
+         <item row="18" column="0">
           <widget class="QLabel" name="humidityLabel">
            <property name="enabled">
             <bool>false</bool>
@@ -243,7 +226,7 @@
            </property>
           </widget>
          </item>
-         <item row="17" column="1">
+         <item row="18" column="1">
           <widget class="QLineEdit" name="humidity">
            <property name="enabled">
             <bool>false</bool>
@@ -276,6 +259,23 @@
            </property>
           </widget>
          </item>
+         <item row="13" column="0">
+          <widget class="QLabel" name="airPressureInHgLabel">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Air Pressure (inHg)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="1">
+          <widget class="QLineEdit" name="inHg">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -304,38 +304,6 @@
  </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>useAtmosCorrection</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>airPressureInHgLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>284</x>
-     <y>235</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>87</x>
-     <y>292</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useAtmosCorrection</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>inHg</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>284</x>
-     <y>235</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>284</x>
-     <y>292</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>useAtmosCorrection</sender>
    <signal>toggled(bool)</signal>

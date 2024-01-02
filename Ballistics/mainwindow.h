@@ -4,16 +4,12 @@
 #include <QMainWindow>
 #include <QVector>
 #include <QtCharts>
-#include "ui_mainwindow.h" // Include the UI header
+
+#include "ui_mainwindow.h"
+#include "TrajectoryPoint.h"
 
 
-// Struct for trajectory data
-struct TrajectoryPoint {
-    double range;
-    double path;
-    double windage;
-    // Add other fields if necessary
-};
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,10 +25,12 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    void toggleView();
 	bool validateInputs();
     void updateTrajectoryChart(const QVector<TrajectoryPoint>&);
     void computeBallistics();
 	QVector<TrajectoryPoint> trajectoryData;
+    bool is3D;
 
 
 private slots:

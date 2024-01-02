@@ -7,3 +7,5 @@ Ballistics/*.o
 Ballistics/untitled.js_plugin_import.cpp
 Ballistics/untitled
 *.o
+*.js
+*.wasm

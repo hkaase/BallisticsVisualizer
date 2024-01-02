@@ -9,19 +9,24 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 	
     connect(ui->calcButton, &QPushButton::clicked, this, &MainWindow::on_calcButton_clicked);
-	connect(ui->bc, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->velo, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->sh, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->angle, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->zero, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->windSpeed, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->windAngle, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->temperature, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
+    connect(ui->bc, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->g1Selected, &QRadioButton::toggled, this, &MainWindow::computeBallistics);
+    connect(ui->velo, &QSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->sh, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->angle, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->zero, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->windSpeed, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->windAngle, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->temperature, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
     // Skipping inHg, altitude, and humidity based on requirements
-    connect(ui->caliber, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->grains, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->length, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
-    connect(ui->twistRate, &QLineEdit::textChanged, this, &MainWindow::computeBallistics);
+    connect(ui->caliber, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->grains, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->length, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->twistRate, &QDoubleSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->maxYards, &QSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+    connect(ui->stepSize, &QSpinBox::valueChanged, this, &MainWindow::computeBallistics);
+	connect(ui->toggleViewButton, &QPushButton::clicked, this, &MainWindow::toggleView);
+
 
 }
 
@@ -30,22 +35,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::toggleView() {
+    if (ui->trajectoryChart->isHidden()) {
+        ui->trajectoryChart->show();
+        ui->shotVisualizer->hide();
+        is3D = false;
+    } else {
+        ui->trajectoryChart->hide();
+        ui->shotVisualizer->show();
+        is3D = true;
+    }
+}
+
 bool MainWindow::validateInputs() {
     bool valid = true;
-    valid &= !ui->bc->text().isEmpty() && ui->bc->text().toDouble() > 0;
-    valid &= !ui->velo->text().isEmpty() && ui->velo->text().toDouble() > 0;
-    valid &= !ui->sh->text().isEmpty() && ui->sh->text().toDouble() > 0;
-    valid &= !ui->angle->text().isEmpty() && ui->angle->text().toDouble() >= 0;
-    valid &= !ui->zero->text().isEmpty() && ui->zero->text().toDouble() > 0;
-    valid &= !ui->windSpeed->text().isEmpty() && ui->windSpeed->text().toDouble() >= 0;
-    valid &= !ui->windAngle->text().isEmpty() && ui->windAngle->text().toDouble() >= 0;
+    valid &= !ui->bc->text().isEmpty() && ui->bc->value() > 0;
+    valid &= !ui->velo->text().isEmpty() && ui->velo->value() > 750;
+    valid &= !ui->sh->text().isEmpty() && ui->sh->value() > 0;
+    valid &= !ui->angle->text().isEmpty() && ui->angle->value() >= 0;
+    valid &= !ui->zero->text().isEmpty() && ui->zero->value() > 0;
+    valid &= !ui->windSpeed->text().isEmpty() && ui->windSpeed->value() >= 0;
+    valid &= !ui->windAngle->text().isEmpty() && ui->windAngle->value() >= 0;
     valid &= !ui->temperature->text().isEmpty(); // Temp could be below 0, so no need to check for > 0
     // Skipping altitude, and humidity based on requirements
 	valid &= !ui->inHg->text().isEmpty();
-    valid &= !ui->caliber->text().isEmpty() && ui->caliber->text().toDouble() > 0;
-    valid &= !ui->grains->text().isEmpty() && ui->grains->text().toDouble() > 0;
-    valid &= !ui->length->text().isEmpty() && ui->length->text().toDouble() > 0;
-    valid &= !ui->twistRate->text().isEmpty() && ui->twistRate->text().toDouble() > 0;
+    valid &= !ui->caliber->text().isEmpty() && ui->caliber->value() > 0;
+    valid &= !ui->grains->text().isEmpty() && ui->grains->value() > 0;
+    valid &= !ui->length->text().isEmpty() && ui->length->value() > 0;
+    valid &= !ui->twistRate->text().isEmpty() && ui->twistRate->value() > 0;
+    valid &= !ui->maxYards->text().isEmpty();
+    valid &= !ui->stepSize->text().isEmpty() && ui->stepSize->value() <= ui->maxYards->value();
     
     return valid;
 }
@@ -60,21 +79,23 @@ void MainWindow::computeBallistics() {
 		trajectoryData.clear();
 
 		// Retrieve input values from UI elements
-		double bc = ui->bc->text().toDouble();
-		double v = ui->velo->text().toDouble();
-		double sh = ui->sh->text().toDouble();
-		double angle = ui->angle->text().toDouble();
-		double zero = ui->zero->text().toDouble();
-		double windspeed = ui->windSpeed->text().toDouble();
-		double windangle = ui->windAngle->text().toDouble();
-		double temp = ui->temperature->text().toDouble();
-		double inHg = ui->inHg->text().toDouble();
-		double altitude = ui->altitude->text().toDouble(); // If needed
-		double humidity = ui->humidity->text().toDouble();
-		double caliber = ui->caliber->text().toDouble();
-		double bulletGrains = ui->grains->text().toDouble();
-		double bulletLength = ui->length->text().toDouble();
-		double twistDenominator = ui->twistRate->text().toDouble(); // Assuming twistRate is the twist denominator
+        double bc = ui->bc->value();
+        double v = ui->velo->value();
+        double sh = ui->sh->value();
+        double angle = ui->angle->value();
+        double zero = ui->zero->value();
+        double windspeed = ui->windSpeed->value();
+        double windangle = ui->windAngle->value();
+        double temp = ui->temperature->value();
+        double inHg = ui->inHg->value();
+        double altitude = ui->altitude->text().toDouble(); // If needed
+        double humidity = ui->humidity->text().toDouble();
+        double caliber = ui->caliber->value();
+        double bulletGrains = ui->grains->value();
+        double bulletLength = ui->length->value();
+        double twistDenominator = ui->twistRate->value(); // Assuming twistRate is the twist denominator
+        int maxYards = ui->maxYards->text().toInt();
+        int stepSize = ui->stepSize->text().toInt();
 		
 		// Determine which drag coefficient model is selected
 		DragFunction dragModel;
@@ -99,7 +120,7 @@ void MainWindow::computeBallistics() {
 
 		// Store results in a member variable for later use in chart updating
 		QVector<TrajectoryPoint> trajectoryData;
-		for (int s = 0; s <= 1000; s += 1) {
+        for (int s = 0; s <= maxYards; s += stepSize) {
 			TrajectoryPoint point;
 			point.range = Ballistics_get_range(solution, s);
 			point.path = Ballistics_get_path(solution, s);
@@ -123,26 +144,41 @@ void MainWindow::updateTrajectoryChart(const QVector<TrajectoryPoint>& trajector
     for (const TrajectoryPoint &point : trajectoryData) {
         series->append(point.range, point.path);
     }
+    if (!is3D) {
+        // Create a chart or use the existing one
+        QChart *chart = ui->trajectoryChart->chart();
+        if (!chart) { // If there's no chart yet, create one
+            chart = new QChart();
+            ui->trajectoryChart->setChart(chart);
+            chart->legend()->hide();
+            chart->setTitle("Bullet Trajectory");
+        } else { // If a chart already exists, remove the old series
+            chart->removeAllSeries();
+        }
 
-    // Create a chart or use the existing one
-    QChart *chart = ui->trajectoryChart->chart();
-    if (!chart) { // If there's no chart yet, create one
-        chart = new QChart();
-        ui->trajectoryChart->setChart(chart);
-        chart->legend()->hide();
-        chart->setTitle("Bullet Trajectory");
-    } else { // If a chart already exists, remove the old series
-        chart->removeAllSeries();
+        // Add the new series to the chart
+        chart->addSeries(series);
+
+        // Optionally, create default axes or customize them as needed
+        chart->createDefaultAxes();
+        chart->axes(Qt::Horizontal).first()->setTitleText("Range (yards)");
+        chart->axes(Qt::Vertical).first()->setTitleText("Path (inches)");
+
+        // The chart view widget takes ownership of the chart, so no need to delete the chart
+        ui->trajectoryChart->setRenderHint(QPainter::Antialiasing);
     }
 
-    // Add the new series to the chart
-    chart->addSeries(series);
+    else {
+        // Create or configure the 3D visualizer
+        if (!ui->shotVisualizer) {
+            ui->shotVisualizer = new OpenGLShotVisualizer(this);
+            // Add ui->shotVisualizer to your layout or replace a placeholder widget
+            // For example:
+            // ui->placeholderWidget->layout()->addWidget(ui->shotVisualizer);
+        }
 
-    // Optionally, create default axes or customize them as needed
-    chart->createDefaultAxes();
-    chart->axes(Qt::Horizontal).first()->setTitleText("Range (yards)");
-    chart->axes(Qt::Vertical).first()->setTitleText("Path (inches)");
-
-    // The chart view widget takes ownership of the chart, so no need to delete the chart
-    ui->trajectoryChart->setRenderHint(QPainter::Antialiasing);
+        // Update the 3D visualizer with trajectory data
+        QVector<TrajectoryPoint> trajectoryData; // Populate this with your data
+        ui->shotVisualizer->setTrajectoryData(trajectoryData);
+    }
 }

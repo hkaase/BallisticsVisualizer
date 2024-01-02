@@ -3,9 +3,9 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include <QtCharts>
 #include "ui_mainwindow.h" // Include the UI header
 
-using namespace QtCharts; // Use the QtCharts namespace to easily access chart classes
 
 // Struct for trajectory data
 struct TrajectoryPoint {
@@ -29,7 +29,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-	void updateTrajectoryChart(const QVector<TrajectoryPoint>);
+    void updateTrajectoryChart(const QVector<TrajectoryPoint>&);
     void computeBallistics();
 	QVector<TrajectoryPoint> trajectoryData;
 

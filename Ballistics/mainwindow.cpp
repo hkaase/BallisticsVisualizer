@@ -1,8 +1,5 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "ballistics.h"
-
-
+#include <ballistics/ballistics.h>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -11,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 	
-	connect(ui->calcButton, &QPushButton::clicked, this, &MainWindow::on_calculateButton_clicked);
+    connect(ui->calcButton, &QPushButton::clicked, this, &MainWindow::on_calcButton_clicked);
 
 }
 
@@ -22,7 +19,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_calcButton_clicked() {
     computeBallistics();
-    updateTrajectoryChart();
 }
 
 void MainWindow::computeBallistics() {
@@ -38,45 +34,46 @@ void MainWindow::computeBallistics() {
     double windspeed = ui->windSpeed->text().toDouble();
     double windangle = ui->windAngle->text().toDouble();
     double temp = ui->temperature->text().toDouble();
-    double inHg = ui->atmosPressureInHg->text().toDouble();
+    double inHg = ui->inHg->text().toDouble();
     double altitude = ui->altitude->text().toDouble(); // If needed
+    double humidity = ui->humidity->text().toDouble();
     double caliber = ui->caliber->text().toDouble();
     double bulletGrains = ui->grains->text().toDouble();
-    double bulletLength = ui->bulletLength->text().toDouble();
+    double bulletLength = ui->length->text().toDouble();
     double twistDenominator = ui->twistRate->text().toDouble(); // Assuming twistRate is the twist denominator
     
     // Determine which drag coefficient model is selected
-    int dragModel;
+    DragFunction dragModel;
     if (ui->g1Selected->isChecked()) {
-        dragModel = G1;
+        dragModel = (DragFunction)G1;
     } else if (ui->g7Selected->isChecked()) {
-        dragModel = G7;
+        dragModel = (DragFunction)G7;
     } else {
         // Handle the case where no drag model is selected or default to one
-        dragModel = G7;
+        dragModel = (DragFunction)G7;
     }
     
     // If the atmosphere correction checkbox is checked, correct the BC
     if (ui->useAtmosCorrection->isChecked()) {
-        bc = Ballistics::atmosphere_correction(bc, altitude, inHg, temp, humidity);
+        bc = atmosphere_correction(bc, altitude, inHg, temp, humidity);
     }
     
     // Perform ballistic calculations
     Ballistics* solution;
-    double zeroangle = Ballistics::zero_angle(dragModel, bc, v, sh, zero, angle);
-    int k = Ballistics::solve(&solution, dragModel, bc, v, sh, angle, zeroangle, windspeed, windangle);
+    double zeroangle = zero_angle(dragModel, bc, v, sh, zero, angle);
+    Ballistics_solve_modified_vertDeflect(&solution, dragModel, bc, v, sh, angle, zeroangle, windspeed, windangle, caliber, bulletLength, temp, inHg, twistDenominator, v, bulletGrains, 1);
 
     // Store results in a member variable for later use in chart updating
     QVector<TrajectoryPoint> trajectoryData;
-    for (int s = 0; s <= k; s += 100) {
+    for (int s = 0; s <= 1000; s += 1) {
         TrajectoryPoint point;
-        point.range = Ballistics::get_range(solution, s);
-        point.path = Ballistics::get_path(solution, s);
-        point.windage = Ballistics::get_windage(solution, s);
+        point.range = Ballistics_get_range(solution, s);
+        point.path = Ballistics_get_path(solution, s);
+        point.windage = Ballistics_get_windage(solution, s);
         trajectoryData.push_back(point);
     }
     
-    Ballistics::free(solution);
+    Ballistics_free(solution);
     
     // Now that we have the trajectory data, update the chart
     updateTrajectoryChart(trajectoryData);

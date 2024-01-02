@@ -1,0 +1,4 @@
+build*/
+*.user
+Ballistics/Makefile
+Ballistics/mainwindow.ui.autosave

@@ -27,8 +27,18 @@
      <item>
       <widget class="QGroupBox" name="groupBox_3">
        <property name="title">
-        <string>GroupBox</string>
+        <string>Ballistics Visualization</string>
        </property>
+       <widget class="QChartView" name="trajectoryChart">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>391</width>
+          <height>391</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
      </item>
      <item>
@@ -51,7 +61,7 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-        <widget class="QPushButton" name="a">
+        <widget class="QPushButton" name="calcButton">
          <property name="geometry">
           <rect>
            <x>60</x>
@@ -232,6 +242,13 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">qchartview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -327,6 +344,22 @@
     <hint type="destinationlabel">
      <x>284</x>
      <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>calcButton</sender>
+   <signal>clicked()</signal>
+   <receiver>trajectoryChart</receiver>
+   <slot>repaint()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>594</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>196</x>
+     <y>216</y>
     </hint>
    </hints>
   </connection>
